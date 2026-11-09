@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Career Dreamer — Mapeamento Vocacional</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topo">
+    <div class="container topo__conteudo">
+      <a href="index.html" class="marca">
+        <span class="marca__simbolo">✨</span>
+        <span>Career Dreamer</span>
+      </a>
+      <a href="resultado.html?exemplo" class="botao botao--secundario">Ver um resultado de exemplo</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="container pagina-inicial">
+      <section class="apresentacao">
+        <h1>Descubra caminhos profissionais alinhados ao seu perfil</h1>
+        <p class="apresentacao__texto">
+          Informe seu nome, o que você ama fazer nos seus momentos livres e suas principais áreas de interesse. Nossa IA analisa tudo e monta um mapeamento vocacional personalizado para você.
+        </p>
+        <ol class="passos">
+          <li>Preencha seus dados básicos e interesses abaixo.</li>
+          <li>Nossa inteligência artificial processa seu perfil vocacional.</li>
+          <li>Explore carreiras compatíveis, competências e roteiros de estudo.</li>
+        </ol>
+      </section>
+
+      <section class="cartao">
+        <h2 class="subtitulo-cartao">Iniciar Mapeamento</h2>
+        <form id="form-perfil" class="formulario" novalidate>
+          <div class="campo">
+            <label for="nome">Nome</label>
+            <input type="text" id="nome" name="nome" placeholder="Ex: Ana Maria Clara" required minlength="2" maxlength="60">
+            <p class="dica">Digite seu nome completo (de 2 a 60 caracteres).</p>
+          </div>
+
+          <div class="campo">
+            <label for="hobbies">Hobbies</label>
+            <textarea id="hobbies" name="hobbies" placeholder="Ex: dançar, cantar, programar" required></textarea>
+            <p class="dica">Separe os hobbies por vírgulas.</p>
+          </div>
+
+          <div class="campo">
+            <label for="interesses">Áreas de interesse</label>
+            <textarea id="interesses" name="interesses" placeholder="Ex: design de jogos, desenvolvimento de pessoas" required></textarea>
+            <p class="dica">Separe as áreas de interesse por vírgulas.</p>
+          </div>
+
+          <button type="submit" id="botao-enviar" class="botao">Descobrir minha carreira</button>
+        </form>
+      </section>
+    </div>
+  </main>
+
+  <footer class="rodape">
+    <div class="container">
+      <p>&copy; 2026 Career Dreamer. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
+  <dialog id="modal-tarde" class="modal">
+    <h3>Tente mais tarde</h3>
+    <p>O serviço de inteligência artificial ainda não está disponível ou a URL da API não foi configurada. Por favor, tente novamente mais tarde ou explore o resultado de exemplo.</p>
+    <div class="modal__acoes">
+      <button type="button" id="fechar-modal" class="botao">Entendi</button>
+    </div>
+  </dialog>
+
+  <!-- Scripts apontando corretamente para a pasta Javascript -->
+  <script src="Javascript/config.js"></script>
+  <script src="Javascript/app.js"></script>
+</body>
+</html>

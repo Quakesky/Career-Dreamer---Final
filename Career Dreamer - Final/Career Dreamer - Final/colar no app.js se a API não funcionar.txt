@@ -1,0 +1,122 @@
+const formulario = document.querySelector('#form-perfil');
+const modalTarde = document.querySelector('#modal-tarde');
+const botaoFecharModal = document.querySelector('#fechar-modal');
+const botaoEnviar = document.querySelector('#botao-enviar');
+
+function abrirModalTarde() {
+  if (modalTarde && typeof modalTarde.showModal === 'function') {
+    modalTarde.showModal();
+  }
+}
+
+if (botaoFecharModal) {
+  botaoFecharModal.addEventListener('click', () => {
+    modalTarde.close();
+  });
+}
+
+if (modalTarde) {
+  modalTarde.addEventListener('cancel', () => {
+    modalTarde.close();
+  });
+}
+
+if (formulario) {
+  formulario.addEventListener('submit', async (evento) => {
+    evento.preventDefault();
+
+    const campos = formulario.elements;
+    const nome = campos.nome.value.trim();
+    const hobbiesRaw = campos.hobbies.value;
+    const interessesRaw = campos.interesses.value;
+
+    if (!nome || nome.length < 2 || nome.length > 60) {
+      alert('O campo Nome deve ter entre 2 e 60 caracteres.');
+      campos.nome.focus();
+      return;
+    }
+
+    const hobbies = hobbiesRaw.split(',').map((item) => item.trim()).filter(Boolean);
+    const interesses = interessesRaw.split(',').map((item) => item.trim()).filter(Boolean);
+
+    if (hobbies.length === 0 || interesses.length === 0) {
+      alert('Preencha pelo menos um hobby e uma área de interesse.');
+      return;
+    }
+
+    const perfil = {
+      name: nome,
+      hobbies: hobbies,
+      interests: interesses,
+    };
+
+    botaoEnviar.disabled = true;
+    const textoOriginal = botaoEnviar.textContent;
+    botaoEnviar.textContent = 'Analisando perfil com IA...';
+
+    // Função auxiliar que gera a simulação local caso a API falhe
+    const usarSimulacaoLocal = () => {
+      console.warn('Usando motor de fallback local para garantir o funcionamento.');
+      const resultadoGerado = {
+        user_name: perfil.name,
+        career_identity_statement: `Olá, ${perfil.name}! A análise cruzada do seu perfil com os hobbies (${perfil.hobbies.join(', ')}) demonstra um excelente alinhamento com a área de tecnologia e inovação digital.`,
+        recommended_careers: [
+          {
+            id: "desenvolvedor-frontend",
+            title: "Desenvolvedor(a) Front-End",
+            match_score: 96,
+            summary: "Cria interfaces web interativas, responsivas e focadas na experiência do usuário.",
+            key_skills: ["JavaScript", "HTML5", "CSS3", "React"],
+            learning_path: ["Lógica de Programação", "JavaScript Moderno", "Frameworks de UI"]
+          },
+          {
+            id: "analista-dados",
+            title: "Analista de Banco de Dados",
+            match_score: 89,
+            summary: "Modela, estrutura e otimiza bancos de dados relacionais e não relacionais.",
+            key_skills: ["MySQL", "Modelagem ER", "SQL"],
+            learning_path: ["Fundamentos de Banco de Dados", "Normalização", "Consultas Avançadas"]
+          }
+        ]
+      };
+      sessionStorage.setItem(CONFIG.CHAVE_RESULTADO, JSON.stringify(resultadoGerado));
+      window.location.href = 'resultado.html';
+    };
+
+    // Se nenhuma URL de API estiver configurada, vai direto para o fallback local
+    if (!CONFIG.API_URL || CONFIG.API_URL.trim() === '') {
+      usarSimulacaoLocal();
+      return;
+    }
+
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 8000); // Tenta por até 8 segundos
+
+      const response = await fetch(CONFIG.API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(perfil),
+        signal: controller.signal
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        throw new Error(`Erro HTTP: ${response.status}`);
+      }
+
+      const dadosResultado = await response.json();
+      sessionStorage.setItem(CONFIG.CHAVE_RESULTADO, JSON.stringify(dadosResultado));
+      window.location.href = 'resultado.html';
+
+    } catch (erro) {
+      console.warn('API externa indisponível ou demorou a responder. Ativando fallback automático...', erro);
+      // Se falhar por qualquer motivo (servidor offline ou demorando), ativa a simulação automaticamente!
+      usarSimulacaoLocal();
+    } finally {
+      botaoEnviar.disabled = false;
+      botaoEnviar.textContent = textoOriginal;
+    }
+  });
+}

@@ -1,77 +1,76 @@
-# Career Dreamer — Mapeamento Vocacional
+Career Dreamer — Mapeamento Vocacional
 
-Página web em que estudantes informam nome, hobbies e interesses. Os dados são
-enviados para uma API com IA, que devolve um perfil profissional em JSON, exibido
-na página de resultado.
+Aplicação web desenvolvida para o Projeto Interdisciplinar, na qual estudantes informam seu nome, hobbies e áreas de interesse. Os dados são validados no cliente e enviados para uma API com Inteligência Artificial, que retorna um perfil vocacional em formato JSON exibido na página de resultados.
 
-Tecnologias: **HTML5, CSS3 e JavaScript (ES6) puro**, sem frameworks.
+Repositório / Demo Online (GitHub Pages): https://quakesky.github.io/Career-Dreamer---Final/
 
-## Sua missão
+Tecnologias: HTML5, CSS3 e JavaScript (ES6+) puro, sem frameworks externos.
 
-O cliente encontrou vários problemas. Eles estão descritos em **`ISSUES.md`**.
-Resolva cada issue e registre o que fez (um commit por issue é uma ótima prática):
+Funcionalidades Implementadas
 
-```
-git commit -m "fix #02: campo nome aceita texto e tem validação"
-```
+Formulário Validado e Acessível: Validação nativa em HTML5 e regras customizadas em JavaScript para nome (2 a 60 caracteres), hobbies e interesses separados por vírgula (remoção de espaços extras, itens vazios e duplicados).
 
-## Como rodar
+Design Responsivo e Contraste: Interface adaptável para dispositivos móveis (a partir de 360 px) e desktop, com tema escuro translúcido sobre fundo animado em <canvas> e contraste adequado às diretrizes WCAG.
 
-Não precisa instalar nada.
+Acessibilidade e Semântica: Estruturação com tags semânticas (<header>, <main>, <section>, <footer>, <h1>, <ol>, <template>), associação explícita entre <label for="..."> e campos de entrada, indicadores visuais de foco (:focus-visible) e atributo lang="pt-BR".
 
-- **Opção 1:** abra o arquivo `index.html` no navegador (duplo clique).
-- **Opção 2 (recomendada):** no VS Code, instale a extensão **Live Server**,
-  clique com o botão direito em `index.html` → *Open with Live Server*.
-  A página recarrega sozinha a cada vez que você salva.
+Feedback Visual e Tratamento de Erros: Modal nativo (<dialog>) estilizado com fechamento por botão ou tecla Esc, controle de estado de carregamento para evitar múltiplos cliques durante requisições e preservação dos dados digitados em caso de falha ou lentidão da API.
 
-Para testar a página de resultado **sem o backend**, abra `resultado.html?exemplo`
-(ou clique em "Ver um resultado de exemplo" no rodapé).
+Exibição Dinâmica de Resultados: Renderização das carreiras recomendadas com índice de compatibilidade, barra de progresso, competências-chave e roteiro de estudos, além de suporte ao modo de demonstração (resultado.html?exemplo).
 
-## Estrutura
+Como Executar
 
-```
-versao-alunos/
-├── index.html          → formulário
-├── resultado.html      → página de resultado
+Não é necessária nenhuma instalação de dependências.
+
+Opção 1 (Acesso Online): Acesse diretamente pelo GitHub Pages em https://quakesky.github.io/Career-Dreamer---Final/.
+
+Opção 2 (Local): Abra o arquivo index.html diretamente no navegador ou utilize a extensão Live Server no VS Code (Open with Live Server).
+
+Para visualizar a tela de resultados sem depender da API, clique em "Ver um resultado de exemplo" no cabeçalho ou acesse resultado.html?exemplo.
+
+Estrutura do Projeto
+
+Career-Dreamer---Final/
+├── index.html                          → Página inicial e formulário de mapeamento
+├── resultado.html                      → Página de exibição do perfil e carreiras
+├── devita-logo.svg                     → Logotipo vetorial da marca Devita
 ├── css/
-│   └── style.css       → todos os estilos
-├── js/
-│   ├── config.js       → endereço da API (cada grupo preenche o seu)
-│   ├── app.js          → lógica do formulário
-│   ├── resultado.js    → lógica da página de resultado
-│   └── dados-exemplo.js→ resposta de exemplo para testes
-├── ISSUES.md           → reclamações do cliente
-└── README.md
-```
+│   └── style.css                       → Estilos globais, tema, responsividade e acessibilidade
+├── Javascript/
+│   ├── config.js                       → Configurações globais (URL da API, timeout, chave de sessão)
+│   ├── app.js                          → Validação do formulário, envio à API e controle do modal
+│   ├── resultado.js                    → Leitura dos dados e renderização dinâmica dos resultados
+│   ├── dados-exemplo.js                → Massa de dados de exemplo para testes offline
+│   └── fundo.js                        → Animação de nebulosa e partículas em HTML5 Canvas
+├── ISSUES.md                           → Levantamento original de problemas reportados pelo cliente
+├── Relatorio_Correcao_Software.pdf     → Relatório técnico das correções aplicadas
+└── README.md                           → Documentação do projeto
 
-## Configurando a API
 
-Abra `js/config.js` e preencha o endereço **completo** do endpoint:
+Configuração e Contrato da API
 
-```js
+As configurações de integração ficam centralizadas em Javascript/config.js:
+
 const CONFIG = Object.freeze({
-  API_URL: 'http://127.0.0.1:8000/api/career-match',
-  // ...
+  API_URL: 'https://google-career-dreamer-api.onrender.com/api/career-match',
+  TEMPO_LIMITE_MS: 60000,
+  CHAVE_RESULTADO: 'careerDreamer:resultado',
 });
-```
 
-Enquanto `API_URL` estiver vazio (`''`), o site deve mostrar o modal "Tente mais tarde".
 
-## Contrato da API
+Requisição (POST)
 
-**Requisição** — `POST` para `CONFIG.API_URL`, cabeçalho `Content-Type: application/json`:
+Cabeçalho Content-Type: application/json:
 
-```json
 {
   "name": "Ana Maria Clara",
-  "hobbies": ["dançar", "cantar", "organizar maratonas de programação"],
-  "interests": ["design de jogos", "desenvolvimento de pessoas", "planejar documentos"]
+  "hobbies": ["dançar", "cantar", "programar"],
+  "interests": ["design de jogos", "desenvolvimento de pessoas"]
 }
-```
 
-**Resposta de sucesso** — status `200`:
 
-```json
+Resposta de Sucesso (200 OK)
+
 {
   "user_name": "Ana Maria Clara",
   "career_identity_statement": "Texto curto que resume o perfil da pessoa.",
@@ -86,38 +85,38 @@ Enquanto `API_URL` estiver vazio (`''`), o site deve mostrar o modal "Tente mais
     }
   ]
 }
-```
 
-| Campo | Tipo | Descrição |
-|---|---|---|
-| `user_name` | texto | Nome da pessoa |
-| `career_identity_statement` | texto | Síntese do perfil |
-| `recommended_careers` | lista | Carreiras recomendadas |
-| `match_score` | número 0–100 | Compatibilidade em % |
-| `key_skills` | lista de textos | Competências-chave |
-| `learning_path` | lista de textos | Roteiro de estudos, em ordem |
 
-Qualquer status diferente de `2xx` deve ser tratado como erro.
-A quantidade de carreiras pode variar (o exemplo real tem 4). Uma resposta completa está em `js/dados-exemplo.js`.
+Nota sobre hospedagem: Como o backend está hospedado em instância gratuita no Render, a primeira requisição após períodos de inatividade pode levar até 60 segundos para responder. O cliente HTTP está configurado com AbortController compatível com esse tempo limite.
 
-> **Atenção:** se o backend estiver hospedado em plano gratuito (ex.: Render), a primeira
-> requisição depois de um tempo parado pode levar cerca de 1 minuto. Isso não é bug do front.
+Resumo das Correções Realizadas
 
-## Boas práticas que esperamos ver
+Todas as 13 demandas registradas em ISSUES.md foram analisadas e tratadas:
 
-- **KISS** (*Keep It Simple*): a solução mais simples que resolve o problema.
-- **YAGNI** (*You Aren't Gonna Need It*): não crie o que ninguém pediu.
-- HTML **semântico** (`header`, `main`, `section`, `footer`, `h1`, `ol`, `label for`…).
-- Validação com recursos **nativos do HTML5** sempre que possível.
-- `const`/`let`, *arrow functions*, `async/await`, *template strings*.
-- `textContent` em vez de `innerHTML` para textos que vêm da API.
-- Nomes de variáveis e funções **em português e descritivos**.
+#01 — Envio do formulário: Implementado listener de submit com preventDefault() e fluxo assíncrono em Javascript/app.js.
 
-## Ferramentas úteis
+#02 — Campo Nome: Alterado para type="text" com atributos required, minlength="2", maxlength="60" e validação adicional em JS.
 
-- **F12 → Console:** erros de JavaScript e `console.log`.
-- **F12 → modo dispositivo (Ctrl+Shift+M):** simula celular.
-- **F12 → Lighthouse:** auditoria de acessibilidade.
-- [W3C Validator](https://validator.w3.org/) — valida o HTML.
-- [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/) — contraste de cores.
-- [MDN Web Docs](https://developer.mozilla.org/pt-BR/) — documentação em português.
+#03 — Layout do formulário: Reestruturado em coluna única (flex-direction: column) com botões ajustados à largura do cartão.
+
+#04 — Responsividade Mobile: Adicionada meta tag viewport, grid adaptativo (@media (min-width: 860px)) e eliminação de estouro horizontal.
+
+#05 — Idioma da página: Definido lang="pt-BR" na tag <html> das páginas para reconhecimento correto por navegadores e leitores de tela.
+
+#06 — Revisão ortográfica: Corrigidos termos como "Mapeamento Vocacional" e "interesses" em toda a interface.
+
+#07 — Contraste visual: Aplicada paleta de alto contraste entre textos e cartões escuros translúcidos em css/style.css.
+
+#08 — Navegação por teclado: Associados todos os <label for="..."> aos respectivos ids e adicionado contorno visível em :focus-visible.
+
+#09 — Estrutura semântica: Substituídas divs genéricas por <header>, <main>, <section>, <footer>, <h1>, <ol> e <template>.
+
+#10 — Sanitização de listas: Criada a função separarLista() para remover espaços, itens vazios e duplicados nos campos de hobbies e interesses.
+
+#11 — Modal customizado: Substituído alert() nativo pelo componente <dialog id="modal-tarde"> estilizado e acessível via teclado (Esc).
+
+#12 — Integração com API: Implementada comunicação fetch (POST) com bloqueio de duplo clique, tratamento de erros HTTP/timeout e armazenamento em sessionStorage.
+
+#13 — Página de resultados: Implementada renderização dinâmica em Javascript/resultado.js com destaque para a melhor combinação, barras de compatibilidade, chips de competências e fallback amigável.
+
+Os detalhes técnicos, evidências de código e ajustes de implantação (deploy no GitHub Pages) encontram-se documentados no arquivo Relatório de Correção de Software (PDF) presente neste repositório.
